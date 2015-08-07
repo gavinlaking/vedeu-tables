@@ -4,15 +4,15 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'vedeu/tables/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "vedeu-tables"
+  spec.name          = 'vedeu-tables'
   spec.version       = Vedeu::Tables::VERSION
-  spec.authors       = ["Gavin Laking"]
-  spec.email         = ["gavinlaking@gmail.com"]
+  spec.authors       = ['Gavin Laking']
+  spec.email         = ['gavinlaking@gmail.com']
 
   spec.summary       = 'A plugin for Vedeu.'
   spec.description   = 'Provides table rendering for Vedeu.'
   spec.homepage      = 'http://github.com/gavinlaking/vedeu-tables'
-  spec.license       = "MIT"
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }

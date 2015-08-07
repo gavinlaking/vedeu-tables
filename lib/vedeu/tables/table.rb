@@ -48,8 +48,6 @@ module Vedeu
         out << horizontal
         out << ['|' + padded(title) + '|'] if present?(title)
 
-
-
         out << ['|' + padded(caption) + '|'] if present?(caption)
         out << horizontal
 
@@ -125,7 +123,6 @@ module Vedeu
       def render_title
         if title
           [horizontal, horizontal]
-
 
         else
           horizontal
