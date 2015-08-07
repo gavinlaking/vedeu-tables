@@ -64,9 +64,10 @@ module Vedeu
       describe '#render' do
         subject { instance.render }
 
-        context 'when there is no title or caption' do
+        context 'when there is no title or caption or data' do
           let(:title)   {}
           let(:caption) {}
+          let(:data)    {}
 
           it { subject.must_equal(
             "+--------------------------------------+\n" \
@@ -74,8 +75,9 @@ module Vedeu
           )}
         end
 
-        context 'when there is a title but no caption' do
+        context 'when there is a title but no caption or data' do
           let(:caption) {}
+          let(:data)    {}
 
           it { subject.must_equal(
             "+--------------------------------------+\n" \
@@ -92,7 +94,9 @@ module Vedeu
           end
         end
 
-        context 'when there is a title and a caption' do
+        context 'when there is a title and a caption but no data' do
+          let(:data) {}
+
           it { subject.must_equal(
             "+--------------------------------------+\n" \
             "|            My Cool Table             |\n" \
@@ -107,6 +111,14 @@ module Vedeu
               "|            My Cool Table             |\n" \
               "| A freezer burn compared to cool- too |\n" \
               "+--------------------------------------+") }
+          end
+
+          context 'when there is data but no title or caption' do
+            let(:title)   {}
+            let(:caption) {}
+
+            # @todo
+            # it { skip }
           end
         end
       end
