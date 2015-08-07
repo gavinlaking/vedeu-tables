@@ -16,7 +16,7 @@ module Vedeu
           title:    title,
         }
       }
-      let(:caption)  {}
+      let(:caption)  { 'People living in my house.' }
       let(:data)     {
         [
           {
@@ -41,7 +41,7 @@ module Vedeu
           location: 'Location',
         }
       }
-      let(:title)    {}
+      let(:title)    { 'My Cool Table' }
 
       before do
         Vedeu.stubs(:width).returns(80)
@@ -62,6 +62,43 @@ module Vedeu
       end
 
       describe '#render' do
+        subject { instance.render }
+
+        context 'when there is no title or caption' do
+          let(:title)   {}
+          let(:caption) {}
+
+          it { subject.must_equal(
+            "+--------------------------------------------------------" \
+            "----------------------+\n" \
+            "+--------------------------------------------------------" \
+            "----------------------+"
+          )}
+        end
+
+        context 'when there is a title but no caption' do
+          let(:caption) {}
+
+          it { subject.must_equal(
+            "+---------------------------------------"   \
+            "---------------------------------------+\n" \
+            "|                                My Cool"   \
+            " Table                                 |\n" \
+            "+---------------------------------------"   \
+            "---------------------------------------+") }
+        end
+
+        context 'when there is a title and a caption' do
+          it { subject.must_equal(
+            "+---------------------------------------"   \
+            "---------------------------------------+\n" \
+            "|                                My Cool"   \
+            " Table                                 |\n" \
+            "|                          People living"   \
+            " in my house.                          |\n" \
+            "+---------------------------------------"   \
+            "---------------------------------------+") }
+        end
       end
 
       describe 'private methods' do

@@ -6,4 +6,5 @@ module Vedeu
 
 end # Vedeu
 
+require 'vedeu/common'
 require 'vedeu/tables/table'

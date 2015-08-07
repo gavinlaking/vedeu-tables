@@ -4,6 +4,8 @@ module Vedeu
 
     class Table
 
+      include Vedeu::Common
+
       # @!attribute [r] caption
       # @return [String]
       attr_reader :caption
@@ -41,6 +43,21 @@ module Vedeu
 
       # @return [void]
       def render
+        out = []
+
+        out << horizontal
+
+        if present?(title)
+          out << ['|' + " #{title} ".center(Vedeu.width - 2) + '|']
+        end
+
+        if present?(caption)
+          out << ['|' + " #{caption} ".center(Vedeu.width - 2) + '|']
+        end
+
+        out << horizontal
+
+        out.join("\n")
       end
 
       # private
@@ -88,6 +105,7 @@ module Vedeu
       end
 
       def horizontal
+        ['+', '-' * (Vedeu.width - 2), '+'].join
       end
 
       def render_column(value)
