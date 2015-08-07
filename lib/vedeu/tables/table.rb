@@ -2,6 +2,8 @@ module Vedeu
 
   module Tables
 
+    # Provides mechanism to draw a table from the provided data.
+    #
     class Table
 
       include Vedeu::Common
@@ -120,25 +122,11 @@ module Vedeu
         value.chomp.slice(0..(Vedeu.width - 5))
       end
 
-      def render_title
-        if title
-          [horizontal, horizontal]
-
-        else
-          horizontal
-
-        end
-      end
-
+      # Crudely provides a horizontal line.
+      #
+      # @return [String]
       def horizontal
         ['+', '-' * (Vedeu.width - 2), '+'].join
-      end
-
-      def render_column(value)
-        [value, vertical]
-      end
-
-      def vertical
       end
 
     end # Table
