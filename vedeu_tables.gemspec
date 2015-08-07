@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'vedeu/tables/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'vedeu-tables'
+  spec.name          = 'vedeu_tables'
   spec.version       = Vedeu::Tables::VERSION
   spec.authors       = ['Gavin Laking']
   spec.email         = ['gavinlaking@gmail.com']
