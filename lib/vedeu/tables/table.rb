@@ -46,15 +46,11 @@ module Vedeu
         out = []
 
         out << horizontal
+        out << ['|' + padded(title) + '|'] if present?(title)
 
-        if present?(title)
-          out << ['|' + " #{title} ".center(Vedeu.width - 2) + '|']
-        end
 
-        if present?(caption)
-          out << ['|' + " #{caption} ".center(Vedeu.width - 2) + '|']
-        end
 
+        out << ['|' + padded(caption) + '|'] if present?(caption)
         out << horizontal
 
         out.join("\n")
@@ -91,6 +87,39 @@ module Vedeu
           1
 
         end
+      end
+
+      # Pads the title with a single whitespace either side.
+      #
+      # @example
+      #   title = 'Truncated!'
+      #   width = 20
+      #   # => ' Truncated! '
+      #
+      #   width = 10
+      #   # => ' Trunca '
+      #
+      # @return [String]
+      # @see #truncated_title
+      def padded(value)
+        truncated(value).center(Vedeu.width - 2)
+      end
+
+      # Truncates the title to the width of the interface, minus characters
+      # needed to ensure there is at least a single character of horizontal
+      # border and a whitespace on either side of the title.
+      #
+      # @example
+      #   title = 'Truncated!'
+      #   width = 20
+      #   # => 'Truncated!'
+      #
+      #   width = 10
+      #   # => 'Trunca'
+      #
+      # @return [String]
+      def truncated(value)
+        value.chomp.slice(0..(Vedeu.width - 5))
       end
 
       def render_title

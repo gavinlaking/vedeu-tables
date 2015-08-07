@@ -44,7 +44,7 @@ module Vedeu
       let(:title)    { 'My Cool Table' }
 
       before do
-        Vedeu.stubs(:width).returns(80)
+        Vedeu.stubs(:width).returns(40)
       end
 
       describe '#initialize' do
@@ -69,10 +69,8 @@ module Vedeu
           let(:caption) {}
 
           it { subject.must_equal(
-            "+--------------------------------------------------------" \
-            "----------------------+\n" \
-            "+--------------------------------------------------------" \
-            "----------------------+"
+            "+--------------------------------------+\n" \
+            "+--------------------------------------+"
           )}
         end
 
@@ -80,24 +78,36 @@ module Vedeu
           let(:caption) {}
 
           it { subject.must_equal(
-            "+---------------------------------------"   \
-            "---------------------------------------+\n" \
-            "|                                My Cool"   \
-            " Table                                 |\n" \
-            "+---------------------------------------"   \
-            "---------------------------------------+") }
+            "+--------------------------------------+\n" \
+            "|            My Cool Table             |\n" \
+            "+--------------------------------------+") }
+
+          context 'and the title is longer than the available space' do
+            let(:title) { 'The Superfunkycalifragisexy Guestlist' }
+
+            it { subject.must_equal(
+              "+--------------------------------------+\n" \
+              "| The Superfunkycalifragisexy Guestlis |\n" \
+              "+--------------------------------------+") }
+          end
         end
 
         context 'when there is a title and a caption' do
           it { subject.must_equal(
-            "+---------------------------------------"   \
-            "---------------------------------------+\n" \
-            "|                                My Cool"   \
-            " Table                                 |\n" \
-            "|                          People living"   \
-            " in my house.                          |\n" \
-            "+---------------------------------------"   \
-            "---------------------------------------+") }
+            "+--------------------------------------+\n" \
+            "|            My Cool Table             |\n" \
+            "|      People living in my house.      |\n" \
+            "+--------------------------------------+") }
+
+          context 'and the caption is longer than the available space' do
+            let(:caption) { 'A freezer burn compared to cool- too sexy!' }
+
+            it { subject.must_equal(
+              "+--------------------------------------+\n" \
+              "|            My Cool Table             |\n" \
+              "| A freezer burn compared to cool- too |\n" \
+              "+--------------------------------------+") }
+          end
         end
       end
 
@@ -109,17 +119,17 @@ module Vedeu
             let(:headings) {}
             let(:data)     {}
 
-            it { subject.must_equal(78) }
+            it { subject.must_equal(38) }
           end
 
           context 'when there are no headings but there is data' do
             let(:headings) {}
 
-            it { subject.must_equal(18) }
+            it { subject.must_equal(8) }
           end
 
           context 'when there are headings' do
-            it { subject.must_equal(18) }
+            it { subject.must_equal(8) }
           end
         end
 
