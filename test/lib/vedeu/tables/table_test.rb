@@ -7,7 +7,7 @@ module Vedeu
     describe Table do
 
       let(:described)  { Vedeu::Tables::Table }
-      let(:instance)   { described.new(attributes) }
+      let(:instance)   { described.new(attributes, options) }
       let(:attributes) {
         {
           caption:  caption,
@@ -23,25 +23,28 @@ module Vedeu
             name:     'Gav',
             age:      37,
             gender:   'Male',
-            location: 'Manchester, UK',
+            location: 'Manchester',
           },
           {
             name:     'Angel',
             age:      32,
             gender:   'Female',
-            location: 'Manchester, UK',
+            location: 'Manchester',
           },
         ]
       }
       let(:headings) {
-        {
-          name:     'Name',
-          age:      'Age',
-          gender:   'Gender',
-          location: 'Location',
-        }
+        [
+          'Name',
+          'Age',
+          'Gender',
+          'Location',
+        ]
       }
       let(:title)    { 'My Cool Table' }
+      let(:options)  {
+        {}
+      }
 
       before do
         Vedeu.stubs(:width).returns(40)
@@ -53,6 +56,7 @@ module Vedeu
         it { instance.instance_variable_get('@data').must_equal(data) }
         it { instance.instance_variable_get('@headings').must_equal(headings) }
         it { instance.instance_variable_get('@title').must_equal(title) }
+        it { instance.instance_variable_get('@options').must_equal(options) }
       end
 
       describe '.build' do
@@ -64,10 +68,11 @@ module Vedeu
       describe '#render' do
         subject { instance.render }
 
-        context 'when there is no title or caption or data' do
-          let(:title)   {}
-          let(:caption) {}
-          let(:data)    {}
+        context 'when there is no title, headings, caption or data' do
+          let(:title)    {}
+          let(:headings) {}
+          let(:caption)  {}
+          let(:data)     {}
 
           it { subject.must_equal(
             "+--------------------------------------+\n" \
@@ -75,9 +80,10 @@ module Vedeu
           )}
         end
 
-        context 'when there is a title but no caption or data' do
-          let(:caption) {}
-          let(:data)    {}
+        context 'when there is a title but no headings, caption or data' do
+          let(:headings) {}
+          let(:caption)  {}
+          let(:data)     {}
 
           it { subject.must_equal(
             "+--------------------------------------+\n" \
@@ -94,8 +100,9 @@ module Vedeu
           end
         end
 
-        context 'when there is a title and a caption but no data' do
-          let(:data) {}
+        context 'when there is a title, a caption but no headings or data' do
+          let(:headings) {}
+          let(:data)     {}
 
           it { subject.must_equal(
             "+--------------------------------------+\n" \
@@ -112,15 +119,27 @@ module Vedeu
               "| A freezer burn compared to cool- too |\n" \
               "+--------------------------------------+") }
           end
-
-          context 'when there is data but no title or caption' do
-            let(:title)   {}
-            let(:caption) {}
-
-            # @todo
-            # it { skip }
-          end
         end
+
+        context 'when there are headings' do
+          it { subject.must_equal(
+            "+--------------------------------------+\n" \
+            "|            My Cool Table             |\n" \
+            "+--------------------------------------+\n" \
+            "+--------------------------------------+\n" \
+            "|      People living in my house.      |\n" \
+            "+--------------------------------------+") }
+        end
+
+        # context 'when there is data' do
+        #   it { subject.must_equal(
+        #     "+--------------------------------------+\n" \
+        #     "|            My Cool Table             |\n" \
+        #     "| Gav      | 37       | Male     | Manchester | \n" \
+        #     "| Angel    | 32       | Female   | Manchester | \n" \
+        #     "|      People living in my house.      |\n" \
+        #     "+--------------------------------------+") }
+        # end
       end
 
       describe 'private methods' do
@@ -131,17 +150,17 @@ module Vedeu
             let(:headings) {}
             let(:data)     {}
 
-            it { subject.must_equal(38) }
+            it { subject.must_equal(39) }
           end
 
           context 'when there are no headings but there is data' do
             let(:headings) {}
 
-            it { subject.must_equal(8) }
+            it { subject.must_equal(9) }
           end
 
           context 'when there are headings' do
-            it { subject.must_equal(8) }
+            it { subject.must_equal(9) }
           end
         end
 
@@ -164,6 +183,12 @@ module Vedeu
           context 'when there are headings' do
             it { subject.must_equal(4) }
           end
+        end
+
+        describe '#' do
+          subject { instance.total_width }
+
+          it { subject.must_equal(36) }
         end
       end
 

@@ -25,8 +25,8 @@ module Vedeu
       attr_reader :title
 
       # @see #initialize
-      def self.build(attributes = {})
-        new(attributes)
+      def self.build(attributes = {}, options = {})
+        new(attributes, options)
       end
 
       # @param attributes [Hash]
@@ -34,13 +34,16 @@ module Vedeu
       # @option attributes data [Array<Hash<Symbol => String,Symbol>>]
       # @option attributes headings [Hash<Symbol => String,Symbol]
       # @option attributes title [String]
+      # @param options [Hash]
+      # @option options width [Fixnum]
       # @return [Vedeu::Tables::Table]
-      def initialize(attributes = {})
+      def initialize(attributes = {}, options = {})
         @attributes = defaults.merge!(attributes)
 
         @attributes.each do |key, value|
           instance_variable_set("@#{key}", value)
         end
+        @options = options
       end
 
       # @return [void]
@@ -48,20 +51,43 @@ module Vedeu
         out = []
 
         out << horizontal
-        out << ['|' + padded(title) + '|'] if present?(title)
+        out << render_title if present?(title)
 
-        out << ['|' + padded(caption) + '|'] if present?(caption)
+        out << render_headings if present?(headings)
+
+        # if headings && headings.any?
+        #   headings_out = []
+
+        #   headings.each do |heading|
+        #     headings_out << ['|' + padded(heading) + '|']
+        #   end
+
+        #   out << headings_out.join
+        # end
+
+        # Array(data).each do |datum|
+        #   data_out = ['| ']
+
+        #   datum.each do |key, value|
+        #     if value.to_s.size > (column_width - 4)
+        #       value = value.chomp.slice(0..(column_width - 1))
+        #     end
+
+        #     data_out << value.to_s.ljust(column_width) + ' | '
+        #   end
+
+        #   out << data_out.join
+        # end
+
+        out << render_caption if present?(caption)
         out << horizontal
-
         out.join("\n")
       end
 
       # private
 
-      # @return [Fixnum]
-      def column_width
-        (((Vedeu.width - 2) - (columns - 1)) / columns).round
-      end
+
+
 
       # @return [Hash<Symbol => Array<Hash<Symbol => String,Symbol>>,
       #                         <Hash<Symbol => String,Symbol>,
@@ -70,15 +96,16 @@ module Vedeu
         {
           caption:  '',
           data:     [],
-          headings: {},
+          headings: [],
           title:    '',
         }
       end
 
+
       # @return [Fixnum]
       def columns
         if headings && headings.any?
-          headings.keys.size
+          headings.size
 
         elsif data && data.any?
           data[0].keys.size
@@ -102,7 +129,7 @@ module Vedeu
       # @return [String]
       # @see #truncated_title
       def padded(value)
-        truncated(value).center(Vedeu.width - 2)
+        truncated(value).center(width - 2)
       end
 
       # Truncates the title to the width of the interface, minus characters
@@ -119,14 +146,77 @@ module Vedeu
       #
       # @return [String]
       def truncated(value)
-        value.chomp.slice(0..(Vedeu.width - 5))
+        value.chomp.slice(0..(width - 5))
+      end
+
+      def padded_column(value)
+
+      end
+
+      def truncated_column(value)
       end
 
       # Crudely provides a horizontal line.
       #
       # @return [String]
       def horizontal
-        ['+', '-' * (Vedeu.width - 2), '+'].join
+        ['+', '-' * (width - 2), '+'].join
+      end
+
+      def render_caption
+        ['|' + padded(caption) + '|']
+      end
+
+      def render_headings
+        out = [horizontal]
+
+        # headings_out = []
+
+        # headings.size.times do |column|
+        #   headings_out << '|'
+        #   headings_out << ' ' * column_width
+        # end
+
+        # headings_out << '|'
+        # out << headings_out.join
+
+        out << horizontal
+        out
+      end
+
+      def render_title
+        ['|' + padded(title) + '|']
+      end
+
+      # @return [Fixnum]
+      def column_width
+        ((width - columns) / columns).round
+      end
+
+      def total_width
+        column_width * columns
+      end
+
+      def border?
+        options[:border]
+      end
+
+      # @return [Fixnum]
+      def width
+        options[:width]
+      end
+
+      # @return [Hash]
+      def options
+        default_options.merge!(@options)
+      end
+
+      # @return [Hash]
+      def default_options
+        {
+          border: true,
+          width:  Vedeu.width
+        }
       end
 
     end # Table
